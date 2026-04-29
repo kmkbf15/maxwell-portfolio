@@ -55,3 +55,17 @@ body {
   background: var(--accent);
   color: var(--accent-foreground);
 }
+
+/* Pure-CSS marquee loop — runs on the compositor for smoothness.
+   Framer Motion handles only the scroll-driven offset on the parent. */
+@keyframes marquee-loop {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.marquee-track {
+  animation: marquee-loop linear infinite;
+  will-change: transform;
+}
+.marquee-reverse {
+  animation-direction: reverse;
+}

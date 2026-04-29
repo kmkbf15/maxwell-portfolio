@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Bricolage_Grotesque } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { Navbar } from "@/components/nav/navbar";
+import { ScrollProgress } from "@/components/nav/scroll-progress";
 import "./globals.css";
 
 const sans = Geist({
@@ -43,7 +45,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <ScrollProgress />
+          <Navbar />
+          <div id="top">{children}</div>
         </ThemeProvider>
       </body>
     </html>
