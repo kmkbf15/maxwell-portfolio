@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# maxwell-portfolio
 
-## Getting Started
+Personal portfolio of **Maxwell Gilbert Gunawan** — frontend developer.
 
-First, run the development server:
+Live site: _coming soon_
+
+## Stack
+
+- **Next.js 16** (App Router) + **React 19** + **TypeScript 5**
+- **Tailwind CSS v4** (CSS-first config)
+- **Framer Motion** — scroll & micro-animations
+- **React Three Fiber + Drei** — lightweight 3D in the hero
+- **next-themes** — dark / light mode
+- **lucide-react** — icons
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+app/                  # Next.js App Router pages
+components/
+  providers/          # Theme provider (client)
+  nav/                # Nav, scroll progress, theme toggle
+  hero/               # Hero section + 3D canvas
+  about/              # About me
+  skills/             # Skill grid
+  projects/           # Project case studies
+  experience/         # Timeline
+  contact/            # Contact footer
+  ui/                 # Custom cursor, magnetic button, etc.
+lib/
+  utils.ts            # cn() class merge helper
+  data.ts             # Site copy / content (edit here)
+public/               # Images, resume, favicon
+```
 
-## Learn More
+## Design tokens
 
-To learn more about Next.js, take a look at the following resources:
+Defined in `app/globals.css` via Tailwind v4 `@theme`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Token | Tailwind utility |
+|---|---|
+| Background | `bg-background` |
+| Foreground | `text-foreground` |
+| Muted | `text-muted` |
+| Accent | `text-accent` / `bg-accent` |
+| Border | `border-border` |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Fonts: `font-sans` (Geist), `font-mono` (Geist Mono), `font-display` (Bricolage Grotesque).
 
-## Deploy on Vercel
+## Build & deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run build   # production build
+npm start       # start production server locally
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Hosting target: **Cloudflare Pages** (configured in a later step).
+
+## License
+
+MIT
