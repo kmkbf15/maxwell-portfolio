@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight, Mail } from "lucide-react";
 import { useRef, type ComponentType, type SVGProps } from "react";
 import { contactLinks, contactSection, site } from "@/lib/data";
+import { Magnetic } from "@/components/ui/magnetic";
 import { ParallaxMarquee } from "./parallax-marquee";
 
 // Lucide v1 dropped brand glyphs, so GitHub/LinkedIn are inline SVGs.
@@ -150,15 +151,16 @@ export function Contact() {
             }
 
             return (
-              <a
-                key={link.kind}
-                href={link.href}
-                target={link.external ? "_blank" : undefined}
-                rel={link.external ? "noopener noreferrer" : undefined}
-                className="group flex flex-col rounded-2xl border border-border bg-background/40 p-5 backdrop-blur-sm transition-colors hover:border-accent/60 hover:bg-foreground/[0.03]"
-              >
-                {inner}
-              </a>
+              <Magnetic key={link.kind} strength={0.25} className="block">
+                <a
+                  href={link.href}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noopener noreferrer" : undefined}
+                  className="group flex h-full flex-col rounded-2xl border border-border bg-background/40 p-5 backdrop-blur-sm transition-colors hover:border-accent/60 hover:bg-foreground/[0.03]"
+                >
+                  {inner}
+                </a>
+              </Magnetic>
             );
           })}
         </motion.div>

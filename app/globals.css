@@ -56,6 +56,16 @@ body {
   color: var(--accent-foreground);
 }
 
+/* When the custom cursor is mounted, hide the native cursor on devices
+   with a fine pointer (mouse). Touch / coarse-pointer devices keep the
+   native pointer because we never mount the custom cursor there. */
+@media (hover: hover) and (pointer: fine) {
+  .custom-cursor-active,
+  .custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
 /* Pure-CSS marquee loop — runs on the compositor for smoothness.
    Framer Motion handles only the scroll-driven offset on the parent. */
 @keyframes marquee-loop {

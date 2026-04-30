@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useRef } from "react";
 import { hero, site } from "@/lib/data";
+import { Magnetic } from "@/components/ui/magnetic";
 import { HeroCanvas } from "./hero-canvas";
 import { NameReveal } from "./name-reveal";
 import { RotatingText } from "./rotating-text";
@@ -71,19 +72,23 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.8 }}
           className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row"
         >
-          <a
-            href={hero.primaryCta.href}
-            className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:scale-[1.03]"
-          >
-            {hero.primaryCta.label}
-            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-          </a>
-          <a
-            href={hero.secondaryCta.href}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background/40 px-6 py-3 text-sm font-medium backdrop-blur-sm transition-colors hover:bg-foreground/5"
-          >
-            {hero.secondaryCta.label}
-          </a>
+          <Magnetic className="inline-block">
+            <a
+              href={hero.primaryCta.href}
+              className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:scale-[1.03]"
+            >
+              {hero.primaryCta.label}
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+            </a>
+          </Magnetic>
+          <Magnetic className="inline-block">
+            <a
+              href={hero.secondaryCta.href}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-background/40 px-6 py-3 text-sm font-medium backdrop-blur-sm transition-colors hover:bg-foreground/5"
+            >
+              {hero.secondaryCta.label}
+            </a>
+          </Magnetic>
         </motion.div>
       </motion.div>
     </section>

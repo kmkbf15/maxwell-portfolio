@@ -92,7 +92,16 @@ Legend: `[ ]` = not started · `[~]` = in progress · `[x]` = done · `[!]` = bl
   - `app/page.tsx` — wired `<Contact />` as the final section; placeholders gone.
   - **Production build passes**, type check clean.
 
-- [ ] **Step 10 — Polish: custom cursor + magnetic buttons**
+- [x] **Step 10 — Polish: custom cursor + magnetic buttons** _(done 2026-04-29)_
+  - `components/ui/custom-cursor.tsx` — two-layer cursor: solid accent dot tracks the pointer 1:1, hollow accent ring follows with spring lag (`useSpring`, stiffness 200 / damping 22). Ring scales to 1.6× when the pointer is over an `a`, `button`, or `[data-cursor='link']`. First touch event flips the device into "touch" mode and unmounts the cursor permanently. Adds `.custom-cursor-active` to `<html>` while mounted.
+  - `app/globals.css` — `@media (hover: hover) and (pointer: fine)` rule that hides the native cursor only when `.custom-cursor-active` is on `<html>`, so phones never lose their cursor.
+  - `components/ui/magnetic.tsx` — generic wrapper. Uses `useMotionValue` + `useSpring` to translate the wrapped child by `(pointer - center) * strength` on `pointermove`, springs back to 0 on `pointerleave`. Caller controls layout via className (`inline-block` for inline buttons, `block` for cards).
+  - `app/layout.tsx` — mounts `<CustomCursor />` once at the root.
+  - `components/hero/hero.tsx` — both CTAs wrapped in `<Magnetic className="inline-block">`.
+  - `components/experience/experience.tsx` — resume button wrapped in Magnetic.
+  - `components/nav/theme-toggle.tsx` — sun/moon button wrapped in Magnetic (strength 0.5 — small target gets a stronger pull).
+  - `components/contact/contact.tsx` — active link cards wrapped in Magnetic (strength 0.25, gentler since the targets are bigger). Disabled "Coming soon" card stays unwrapped.
+  - **Production build passes**, type check clean.
 
 - [ ] **Step 11 — Cloudflare Pages deploy config**
 
@@ -131,6 +140,8 @@ _(updated as we go)_
 - `components/experience/experience.tsx` — vertical timeline w/ scroll-draw accent line + pulsing current-role dot (client)
 - `components/contact/contact.tsx` — contact section: marquee rows, headline, link cards, footer (client)
 - `components/contact/parallax-marquee.tsx` — looping marquee with scroll-driven extra offset (client)
+- `components/ui/custom-cursor.tsx` — two-layer follow cursor (dot + spring-lagged ring) (client)
+- `components/ui/magnetic.tsx` — generic wrapper that pulls children toward the cursor (client)
 
 ---
 

@@ -3,6 +3,7 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { Magnetic } from "@/components/ui/magnetic";
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -17,14 +18,16 @@ export function ThemeToggle() {
   const isDark = mounted && resolvedTheme === "dark";
 
   return (
-    <button
-      type="button"
-      aria-label={mounted ? `Switch to ${isDark ? "light" : "dark"} mode` : "Toggle theme"}
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="grid size-9 place-items-center rounded-full border border-border text-foreground transition-colors hover:bg-foreground/5"
-    >
-      {mounted &&
-        (isDark ? <Sun className="size-4" /> : <Moon className="size-4" />)}
-    </button>
+    <Magnetic className="inline-block" strength={0.5}>
+      <button
+        type="button"
+        aria-label={mounted ? `Switch to ${isDark ? "light" : "dark"} mode` : "Toggle theme"}
+        onClick={() => setTheme(isDark ? "light" : "dark")}
+        className="grid size-9 place-items-center rounded-full border border-border text-foreground transition-colors hover:bg-foreground/5"
+      >
+        {mounted &&
+          (isDark ? <Sun className="size-4" /> : <Moon className="size-4" />)}
+      </button>
+    </Magnetic>
   );
 }

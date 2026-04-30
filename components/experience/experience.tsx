@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Download } from "lucide-react";
 import { useRef } from "react";
 import { experience, experienceSection, resumeUrl } from "@/lib/data";
+import { Magnetic } from "@/components/ui/magnetic";
 
 const reveal = {
   initial: { y: 24, opacity: 0 },
@@ -107,14 +108,16 @@ export function Experience() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-14"
         >
-          <a
-            href={resumeUrl}
-            download
-            className="group inline-flex items-center gap-2 rounded-full border border-border bg-background/40 px-6 py-3 text-sm font-medium backdrop-blur-sm transition-colors hover:border-accent hover:bg-foreground/5"
-          >
-            <Download className="size-4 transition-transform group-hover:-translate-y-0.5" />
-            Download Resume
-          </a>
+          <Magnetic className="inline-block">
+            <a
+              href={resumeUrl}
+              download
+              className="group inline-flex items-center gap-2 rounded-full border border-border bg-background/40 px-6 py-3 text-sm font-medium backdrop-blur-sm transition-colors hover:border-accent hover:bg-foreground/5"
+            >
+              <Download className="size-4 transition-transform group-hover:-translate-y-0.5" />
+              Download Resume
+            </a>
+          </Magnetic>
         </motion.div>
       </div>
     </section>
