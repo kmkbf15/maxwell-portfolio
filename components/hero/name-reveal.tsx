@@ -14,7 +14,7 @@ export function NameReveal({ name }: { name: string }) {
           <motion.span
             initial={{ y: "110%" }}
             animate={{ y: 0 }}
-            transition={{ duration: 0.8, delay: i * 0.12, ease }}
+            transition={{ duration: 0.45, delay: i * 0.06, ease }}
             className="inline-block"
           >
             {word}

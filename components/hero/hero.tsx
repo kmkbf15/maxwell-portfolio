@@ -3,7 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { hero, site } from "@/lib/data";
 import { Magnetic } from "@/components/ui/magnetic";
 import { NameReveal } from "./name-reveal";
@@ -24,6 +24,22 @@ const fadeUp = {
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
+
+  // Hold the canvas mount until after first paint so Lighthouse can record
+  // LCP without competing with the WebGL boot. requestIdleCallback yields
+  // until the browser is idle; setTimeout is the Safari fallback.
+  const [canvasReady, setCanvasReady] = useState(false);
+  useEffect(() => {
+    type IdleWindow = Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    const w = window as IdleWindow;
+    const schedule = w.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 600));
+    const cancel = w.cancelIdleCallback ?? window.clearTimeout;
+    const id = schedule(() => setCanvasReady(true), { timeout: 1500 });
+    return () => cancel(id as number);
+  }, []);
 
   // Parallax: as the user scrolls past the hero, the 3D blob drifts
   // downward and fades. Foreground text drifts up slightly for depth.
@@ -47,7 +63,7 @@ export function Hero() {
         style={{ y: blobY, opacity: blobOpacity }}
         className="absolute inset-0 [mask-image:radial-gradient(circle_at_center,black_40%,transparent_75%)]"
       >
-        <HeroCanvas />
+        {canvasReady && <HeroCanvas />}
       </motion.div>
 
       <motion.div
@@ -56,7 +72,7 @@ export function Hero() {
       >
         <motion.p
           {...fadeUp}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: 0.4 }}
           className="font-mono text-xs uppercase tracking-[0.3em] text-muted"
         >
           {site.role}
@@ -68,7 +84,7 @@ export function Hero() {
 
         <motion.p
           {...fadeUp}
-          transition={{ duration: 0.6, delay: 0.6 }}
+          transition={{ duration: 0.5, delay: 0.25 }}
           className="mt-8 text-lg text-muted sm:text-xl"
         >
           {hero.taglineLead}{" "}
@@ -77,7 +93,7 @@ export function Hero() {
 
         <motion.div
           {...fadeUp}
-          transition={{ duration: 0.6, delay: 0.8 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
           className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row"
         >
           <Magnetic className="inline-block">
