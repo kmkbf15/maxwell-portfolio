@@ -41,6 +41,21 @@ export function Hero() {
     return () => cancel(id as number);
   }, []);
 
+  // Pause the WebGL render loop when the hero leaves the viewport. Without
+  // this, the canvas (incl. bloom postprocessing) keeps eating GPU at 60fps
+  // while the user is reading other sections — that's what causes the
+  // hitch right at section handoffs.
+  const [inView, setInView] = useState(true);
+  useEffect(() => {
+    if (!ref.current) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0 },
+    );
+    obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+
   // Parallax: as the user scrolls past the hero, the 3D blob drifts
   // downward and fades. Foreground text drifts up slightly for depth.
   const { scrollYProgress } = useScroll({
@@ -63,7 +78,7 @@ export function Hero() {
         style={{ y: blobY, opacity: blobOpacity }}
         className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_95%)]"
       >
-        {canvasReady && <HeroCanvas />}
+        {canvasReady && <HeroCanvas active={inView} />}
       </motion.div>
 
       <motion.div

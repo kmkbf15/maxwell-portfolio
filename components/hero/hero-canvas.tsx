@@ -164,7 +164,7 @@ function HeroBlob() {
   );
 }
 
-export function HeroCanvas() {
+export function HeroCanvas({ active = true }: { active?: boolean }) {
   // Theme-reactive fog so depth fades to the page background in both themes.
   const { resolvedTheme } = useTheme();
   const fogColor = resolvedTheme === "light" ? "#fafaf7" : "#0a0a0a";
@@ -174,6 +174,10 @@ export function HeroCanvas() {
       className="absolute inset-0"
       camera={{ position: [0, 0, 6], fov: 45 }}
       dpr={[1, 1.5]}
+      // "never" stops the render loop entirely while the hero is off-screen,
+      // so bloom + the rest of the scene stop burning GPU on every frame.
+      // The canvas stays mounted so scrolling back up resumes instantly.
+      frameloop={active ? "always" : "never"}
       gl={{
         // Bloom does its own filtering — turning off MSAA keeps highlights crisp.
         antialias: false,
