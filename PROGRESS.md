@@ -103,7 +103,18 @@ Legend: `[ ]` = not started · `[~]` = in progress · `[x]` = done · `[!]` = bl
   - `components/contact/contact.tsx` — active link cards wrapped in Magnetic (strength 0.25, gentler since the targets are bigger). Disabled "Coming soon" card stays unwrapped.
   - **Production build passes**, type check clean.
 
-- [ ] **Step 11 — Cloudflare Pages deploy config**
+- [x] **Step 11 — Cloudflare Pages deploy config** _(done 2026-04-30)_
+  - The site is fully client-side (every component is `"use client"`, no API routes, no server actions, no SSR data fetching), so a **Next.js static export** is the cleanest fit for Cloudflare Pages — much simpler than `@cloudflare/next-on-pages` and avoids the Workers/edge-runtime constraints.
+  - `next.config.ts` — added `output: "export"` (emits a fully static site to `out/`), `images: { unoptimized: true }` (the default loader needs a Node runtime; this keeps a future `<Image>` import working under export), and `trailingSlash: true` (generates `/about/index.html` instead of `/about.html` so Cloudflare's static hosting serves clean URLs without redirects).
+  - `.nvmrc` — added with `22` so Cloudflare Pages auto-selects Node 22 LTS (matches what `camera-controls` / drei want).
+  - **Local build verified**: `npm run build` produces `out/` with `index.html`, `404.html`, `_next/static/{chunks,media}`, `favicon.ico`, etc. Confirmed nothing pulls in a server runtime.
+  - **Cloudflare Pages dashboard settings**:
+    - Framework preset: **Next.js (Static HTML Export)** _(or "None" — both work)_
+    - Build command: `npm run build`
+    - Build output directory: `out`
+    - Node version: auto-detected from `.nvmrc` (`22`)
+    - Environment variables: none needed for MVP
+  - User pushes the `next.config.ts` + `.nvmrc` changes and retries the deploy. If anything still fails, paste the Cloudflare build log.
 
 ---
 
@@ -142,6 +153,7 @@ _(updated as we go)_
 - `components/contact/parallax-marquee.tsx` — looping marquee with scroll-driven extra offset (client)
 - `components/ui/custom-cursor.tsx` — two-layer follow cursor (dot + spring-lagged ring) (client)
 - `components/ui/magnetic.tsx` — generic wrapper that pulls children toward the cursor (client)
+- `.nvmrc` — pins Node 22 LTS for Cloudflare Pages builds
 
 ---
 
