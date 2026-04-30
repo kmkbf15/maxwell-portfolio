@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 
-// A stylized "browser" preview: chrome bar + animated abstract gradient panel.
-// Stand-in for real screenshots — swap freely later.
+// Stylized browser preview: chrome bar + abstract gradient panel.
+// Static / cheap by design — this section sits inside a sticky-stack that
+// runs 3 cards at once on screen, so every backdrop-blur or animated blur
+// layer here multiplies the per-frame paint cost. Keep it flat.
 export function BrowserMockup({
   accent,
   domain,
@@ -12,7 +14,7 @@ export function BrowserMockup({
   domain: string;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-background/80 shadow-2xl">
+    <div className="overflow-hidden rounded-xl border border-border bg-background/80 shadow-xl">
       {/* chrome bar */}
       <div className="flex items-center gap-2 border-b border-border bg-foreground/[0.03] px-4 py-3">
         <div className="flex gap-1.5">
@@ -27,31 +29,16 @@ export function BrowserMockup({
 
       {/* canvas area */}
       <div className="relative h-[360px] overflow-hidden sm:h-[440px]">
-        {/* base gradient */}
+        {/* Static layered radial gradients — gives the "ambient color"
+            feel without any backdrop-blur or animated blurred blobs. */}
         <div
           className="absolute inset-0"
           style={{
-            background: `radial-gradient(120% 90% at 20% 10%, ${accent}33 0%, transparent 60%), radial-gradient(120% 90% at 90% 90%, ${accent}22 0%, transparent 55%)`,
+            background: `radial-gradient(120% 90% at 20% 10%, ${accent}55 0%, transparent 55%), radial-gradient(120% 90% at 90% 90%, ${accent}33 0%, transparent 55%), linear-gradient(180deg, transparent, ${accent}11)`,
           }}
         />
 
-        {/* drifting blob 1 */}
-        <motion.div
-          className="absolute -left-20 -top-20 size-72 rounded-full blur-3xl"
-          style={{ backgroundColor: accent, opacity: 0.35 }}
-          animate={{ x: [0, 40, 0], y: [0, 30, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* drifting blob 2 */}
-        <motion.div
-          className="absolute -bottom-24 -right-10 size-80 rounded-full blur-3xl"
-          style={{ backgroundColor: accent, opacity: 0.25 }}
-          animate={{ x: [0, -30, 0], y: [0, -20, 0] }}
-          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* abstract UI shapes — fake "chart" feel */}
+        {/* abstract UI shapes — solid bgs (no backdrop-blur) */}
         <div className="relative grid h-full grid-cols-12 gap-3 p-6">
           {/* sidebar column */}
           <div className="col-span-3 hidden flex-col gap-2 sm:flex">
@@ -66,15 +53,15 @@ export function BrowserMockup({
           <div className="col-span-12 flex flex-col gap-3 sm:col-span-9">
             <div className="flex gap-3">
               <div
-                className="h-20 flex-1 rounded-lg border border-border/60 backdrop-blur-sm"
-                style={{ backgroundColor: `${accent}22` }}
+                className="h-20 flex-1 rounded-lg border border-border/60"
+                style={{ backgroundColor: `${accent}33` }}
               />
-              <div className="h-20 flex-1 rounded-lg border border-border/60 bg-background/40 backdrop-blur-sm" />
-              <div className="h-20 flex-1 rounded-lg border border-border/60 bg-background/40 backdrop-blur-sm" />
+              <div className="h-20 flex-1 rounded-lg border border-border/60 bg-foreground/[0.04]" />
+              <div className="h-20 flex-1 rounded-lg border border-border/60 bg-foreground/[0.04]" />
             </div>
 
             {/* fake bar chart */}
-            <div className="relative flex flex-1 items-end gap-2 rounded-lg border border-border/60 bg-background/40 p-4 backdrop-blur-sm">
+            <div className="relative flex flex-1 items-end gap-2 rounded-lg border border-border/60 bg-foreground/[0.03] p-4">
               {[0.4, 0.7, 0.55, 0.85, 0.5, 0.95, 0.65].map((h, i) => (
                 <motion.div
                   key={i}
@@ -93,16 +80,6 @@ export function BrowserMockup({
             </div>
           </div>
         </div>
-
-        {/* subtle grain overlay */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04] mix-blend-overlay"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 1px 1px, white 1px, transparent 1px)",
-            backgroundSize: "3px 3px",
-          }}
-        />
       </div>
     </div>
   );

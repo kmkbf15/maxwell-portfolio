@@ -53,7 +53,7 @@ export function ProjectCard({
     >
       <motion.article
         style={{ scale, opacity }}
-        className="relative w-full max-w-6xl origin-top overflow-hidden rounded-3xl border border-border bg-background/95 p-6 shadow-2xl backdrop-blur sm:p-10"
+        className="relative w-full max-w-6xl origin-top overflow-hidden rounded-3xl border border-border bg-background p-6 shadow-xl will-change-transform sm:p-10"
       >
         <div className="grid gap-8 md:grid-cols-[1fr_1.4fr] md:items-center">
           {/* left: meta + copy */}
