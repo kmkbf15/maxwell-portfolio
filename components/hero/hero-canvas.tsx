@@ -24,12 +24,12 @@ function Blob() {
   });
 
   return (
-    <Sphere ref={meshRef} args={[1, 96, 96]} scale={2.6}>
+    <Sphere ref={meshRef} args={[1, 64, 64]} scale={2.6}>
       <MeshDistortMaterial
         color="#ff4d2e"
-        distort={0.55}
-        speed={2.2}
-        roughness={0.15}
+        distort={0.5}
+        speed={1.6}
+        roughness={0.2}
         metalness={0.1}
       />
     </Sphere>
@@ -41,8 +41,9 @@ export function HeroCanvas() {
     <Canvas
       className="absolute inset-0"
       camera={{ position: [0, 0, 6], fov: 45 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true }}
+      // Cap dpr at 1.5 — at 2 the distort shader runs 4x the pixels on retina.
+      dpr={[1, 1.5]}
+      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
     >
       <ambientLight intensity={0.5} />
       <directionalLight position={[3, 3, 5]} intensity={1.4} />

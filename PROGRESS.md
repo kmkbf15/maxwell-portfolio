@@ -103,6 +103,17 @@ Legend: `[ ]` = not started · `[~]` = in progress · `[x]` = done · `[!]` = bl
   - `components/contact/contact.tsx` — active link cards wrapped in Magnetic (strength 0.25, gentler since the targets are bigger). Disabled "Coming soon" card stays unwrapped.
   - **Production build passes**, type check clean.
 
+- [x] **Performance pass — Lighthouse 74 → optimize** _(done 2026-04-30)_
+  - **Lazy-loaded the R3F hero canvas** via `next/dynamic({ ssr: false })`. Three.js + drei (~865KB) is now an async chunk loaded after first paint instead of blocking LCP. Hero text renders immediately; the blob fades in once the chunk resolves.
+  - **Reduced sphere geometry**: 96×96 → 64×64 segments (~55% fewer verts). Distort `speed` 2.2 → 1.6, `distort` 0.55 → 0.5 — cheaper noise shader per frame, visually almost identical.
+  - **Capped DPR** at `[1, 1.5]` (was `[1, 2]`). At dpr=2 the shader runs 4× the pixels on retina displays for marginal visual gain.
+  - **Added `powerPreference: "high-performance"`** to the WebGL context — prefers the discrete GPU on hybrid laptops.
+  - **Trimmed Bricolage Grotesque weights** to `[600, 700]` (was `[400, 600, 700, 800]`). Verified by greping `font-display` usages — only 600 and 700 are actually used. Roughly halved display-font payload.
+  - **Added `display: "swap"`** to all three `next/font` declarations so text renders immediately with the fallback while the webfont streams in (eliminates FOIT, improves FCP/LCP).
+  - **Custom cursor — eliminated React re-renders on pointermove**: replaced `useState(hovering)` (which re-rendered on every link enter/leave) with a `useMotionValue` driving the ring's `scale` via spring. Also throttled the `closest()` lookup to one rAF per frame; the dot's position is still applied immediately so it stays glued to the cursor.
+  - `next/font` declarations also now have `display: "swap"` for FCP improvement.
+  - **Production build passes**, type check clean. Three.js correctly split into its own async chunk (verified in `out/_next/static/chunks`).
+
 - [x] **Step 11 — Cloudflare Pages deploy config** _(done 2026-04-30)_
   - The site is fully client-side (every component is `"use client"`, no API routes, no server actions, no SSR data fetching), so a **Next.js static export** is the cleanest fit for Cloudflare Pages — much simpler than `@cloudflare/next-on-pages` and avoids the Workers/edge-runtime constraints.
   - `next.config.ts` — added `output: "export"` (emits a fully static site to `out/`), `images: { unoptimized: true }` (the default loader needs a Node runtime; this keeps a future `<Image>` import working under export), and `trailingSlash: true` (generates `/about/index.html` instead of `/about.html` so Cloudflare's static hosting serves clean URLs without redirects).

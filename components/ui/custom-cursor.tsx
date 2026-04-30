@@ -8,13 +8,15 @@ import { useEffect, useState } from "react";
 // element. Disabled on touch devices and on small screens.
 export function CustomCursor() {
   const [isTouch, setIsTouch] = useState(false);
-  const [hovering, setHovering] = useState(false);
 
   // Off-screen until the first pointermove arrives.
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
   const ringX = useSpring(x, { stiffness: 200, damping: 22, mass: 0.5 });
   const ringY = useSpring(y, { stiffness: 200, damping: 22, mass: 0.5 });
+  // Drive scale via motion value so hover state changes don't re-render React.
+  const scale = useMotionValue(1);
+  const ringScale = useSpring(scale, { stiffness: 300, damping: 24 });
 
   useEffect(() => {
     // First touch event flips the device into "touch" mode permanently —
@@ -22,19 +24,27 @@ export function CustomCursor() {
     const onTouch = () => setIsTouch(true);
     window.addEventListener("touchstart", onTouch, { once: true });
 
+    // Throttle the closest() lookup to one rAF; pointer position itself is
+    // applied immediately so the dot stays glued to the cursor.
+    let pending = false;
+    let lastTarget: Element | null = null;
+
     const onMove = (e: PointerEvent) => {
       x.set(e.clientX);
       y.set(e.clientY);
-      const target = e.target as Element | null;
-      const interactive = target?.closest(
-        "a, button, [data-cursor='link']",
-      );
-      setHovering(!!interactive);
+      lastTarget = e.target as Element | null;
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(() => {
+        pending = false;
+        const interactive = lastTarget?.closest(
+          "a, button, [data-cursor='link']",
+        );
+        scale.set(interactive ? 1.6 : 1);
+      });
     };
 
     window.addEventListener("pointermove", onMove);
-
-    // Hide the native cursor while ours is active.
     document.documentElement.classList.add("custom-cursor-active");
 
     return () => {
@@ -42,24 +52,20 @@ export function CustomCursor() {
       window.removeEventListener("touchstart", onTouch);
       document.documentElement.classList.remove("custom-cursor-active");
     };
-  }, [x, y]);
+  }, [x, y, scale]);
 
   if (isTouch) return null;
 
   return (
     <>
-      {/* dot — 1:1 with the actual cursor */}
       <motion.div
         aria-hidden
         style={{ x, y }}
         className="pointer-events-none fixed left-0 top-0 z-[100] hidden size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent md:block"
       />
-      {/* ring — spring-lagged, scales up on hover */}
       <motion.div
         aria-hidden
-        style={{ x: ringX, y: ringY }}
-        animate={{ scale: hovering ? 1.6 : 1 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
+        style={{ x: ringX, y: ringY, scale: ringScale }}
         className="pointer-events-none fixed left-0 top-0 z-[100] hidden size-9 -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent/60 md:block"
       />
     </>

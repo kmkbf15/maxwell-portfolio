@@ -2,12 +2,20 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useRef } from "react";
 import { hero, site } from "@/lib/data";
 import { Magnetic } from "@/components/ui/magnetic";
-import { HeroCanvas } from "./hero-canvas";
 import { NameReveal } from "./name-reveal";
 import { RotatingText } from "./rotating-text";
+
+// Lazy-load the R3F canvas so three.js + drei stay out of the initial JS
+// bundle — keeps LCP fast on first paint. The hero text renders immediately;
+// the blob fades in once the chunk is ready.
+const HeroCanvas = dynamic(
+  () => import("./hero-canvas").then((m) => m.HeroCanvas),
+  { ssr: false, loading: () => null },
+);
 
 const fadeUp = {
   initial: { y: 16, opacity: 0 },
