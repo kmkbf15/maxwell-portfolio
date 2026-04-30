@@ -49,7 +49,7 @@ export function Hero() {
   });
 
   const blobY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
-  const blobOpacity = useTransform(scrollYProgress, [0, 0.8], [0.6, 0]);
+  const blobOpacity = useTransform(scrollYProgress, [0, 0.8], [0.9, 0]);
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.2]);
 
@@ -61,7 +61,7 @@ export function Hero() {
       {/* 3D blob — sits behind the text, parallax-drifts on scroll */}
       <motion.div
         style={{ y: blobY, opacity: blobOpacity }}
-        className="absolute inset-0 [mask-image:radial-gradient(circle_at_center,black_40%,transparent_75%)]"
+        className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black_55%,transparent_95%)]"
       >
         {canvasReady && <HeroCanvas />}
       </motion.div>
