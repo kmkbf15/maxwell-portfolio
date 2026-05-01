@@ -1,5 +1,5 @@
 import { navLinks, site } from "@/lib/data";
-import { ThemeToggle } from "./theme-toggle";
+import { ThemeSwitcher } from "./theme-switcher";
 
 export function Navbar() {
   return (
@@ -26,7 +26,7 @@ export function Navbar() {
           ))}
         </ul>
 
-        <ThemeToggle />
+        <ThemeSwitcher />
       </nav>
     </header>
   );

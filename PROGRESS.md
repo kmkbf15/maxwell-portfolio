@@ -127,6 +127,28 @@ Legend: `[ ]` = not started · `[~]` = in progress · `[x]` = done · `[!]` = bl
     - Environment variables: none needed for MVP
   - User pushes the `next.config.ts` + `.nvmrc` changes and retries the deploy. If anything still fails, paste the Cloudflare build log.
 
+- [x] **Step 12 — Multi-palette theme switcher** _(done 2026-05-02)_
+  - Hybrid theme model: 5 preset accent palettes (Sunset, Ocean, Forest, Royal, Rose) × light/dark mode + a custom-accent color picker.
+  - `components/providers/palette-provider.tsx` — context that holds the active palette id + custom hex, persists both to `localStorage`, and applies them to `<html>` (`data-palette` attribute for presets; inline `style.--accent` + readable `--accent-foreground` derived via sRGB luminance for custom).
+  - `app/globals.css` — added `:root[data-palette="…"]` and `.dark[data-palette="…"]` overrides for the four non-default presets. Only `--accent` and `--accent-foreground` swap; backgrounds/text stay coherent with light/dark mode.
+  - `components/ui/popover.tsx` — Framer Motion popover (no Radix). Trigger + Content + portal to `document.body`. Computes `getBoundingClientRect()` to anchor a fixed-position wrapper; the inner motion.div animates only `scale`/`opacity` from a transform-origin matching the trigger side+align (so framer's transform doesn't fight the wrapper's positioning translate). Recomputes on scroll/resize. Closes on click-outside (mousedown) and Escape.
+  - `components/nav/theme-switcher.tsx` — replaces the old sun/moon `ThemeToggle`. Palette icon trigger (still wrapped in `<Magnetic>`). Popover panel has three sections: Mode (Light/Dark), Palette (5 swatches with active ring + check mark), Custom accent (native `<input type="color">` + live hex readout). Selecting a swatch sets `data-palette`; picking a custom color flips palette to `"custom"` automatically.
+  - `app/layout.tsx` — wraps the tree with `<PaletteProvider>` inside `<ThemeProvider>`.
+  - `components/nav/navbar.tsx` — uses `<ThemeSwitcher />`. Old `theme-toggle.tsx` deleted.
+  - Type check clean.
+
+- [x] **Step 13 — Remove custom cursor** _(done 2026-05-02)_
+  - Reverted to the native browser cursor. Removed `<CustomCursor />` from `app/layout.tsx`, deleted `components/ui/custom-cursor.tsx`, and stripped the `.custom-cursor-active { cursor: none }` rule from `app/globals.css`.
+  - `<Magnetic>` wrappers stay — they're independent of the cursor and still pull links/buttons toward the pointer.
+
+- [x] **Step 14 — Smooth color transitions on theme/palette change** _(done 2026-05-02)_
+  - Removed `disableTransitionOnChange` from `<ThemeProvider>` (it was injecting `* { transition: none !important }` during theme switches and killing all our transitions).
+  - Added a global `*,*::before,*::after` rule in `globals.css` that tweens `background-color`, `border-color`, `color`, `fill`, `stroke` over 350ms ease. Transform/opacity/layout properties are intentionally not listed so existing hover and scroll animations stay snappy.
+  - Tailwind's per-element `transition-colors` utilities still win on specificity, so buttons with their own 150ms hover timings keep them — only "untouched" elements pick up the global tween.
+  - Effect: switching mode (light/dark) and switching palette swatches both fade colors smoothly across the whole page; the custom accent picker also drags-update colors fluidly as you scrub the picker.
+  - Follow-up: tried adding `background-image` + `box-shadow` to cover gradients/shadows on light/dark swap — caused visible lag because animating gradient interpolation on every node is expensive. Reverted to a leaner property list (`background-color`, `border-color`, `color`, `fill`, `stroke`) at 200ms.
+  - Final: light/dark swap was still felt heavy on slower frames because it changes virtually every element's bg/border/text simultaneously. Re-enabled `disableTransitionOnChange` on `<ThemeProvider>` — it injects a one-frame `transition: none !important` only during the light/dark flip, so that swap is now instant. Palette swaps (managed directly on `<html data-palette>` by `PaletteProvider`, not via next-themes) bypass that injected style and still crossfade smoothly via the global rule.
+
 ---
 
 ## Files & Folders Created
@@ -148,11 +170,13 @@ _(updated as we go)_
 - `components/providers/theme-provider.tsx` — next-themes wrapper (client component)
 - `components/nav/navbar.tsx` — sticky top nav (server component, embeds toggle)
 - `components/nav/scroll-progress.tsx` — top scroll progress bar (client)
-- `components/nav/theme-toggle.tsx` — sun/moon theme switcher (client)
+- `components/nav/theme-switcher.tsx` — palette icon → popover with mode + 5 palette swatches + custom accent picker (client)
+- `components/providers/palette-provider.tsx` — context that persists palette id / custom accent and applies them to `<html>` (client)
+- `components/ui/popover.tsx` — Framer Motion popover (no Radix); portal-rendered, scale/fade from trigger origin (client)
 - `components/hero/hero.tsx` — hero section orchestrator (client)
-- `components/hero/hero-canvas.tsx` — R3F 3D blob (client)
+- `components/hero/lamp-container.tsx` — Aceternity lamp-effect backdrop with smoother expo-out timings (client)
 - `components/hero/name-reveal.tsx` — animated name (client)
-- `components/hero/rotating-text.tsx` — cycling word animation (client)
+- `components/hero/layout-text-flip.tsx` — Aceternity-style layout-animated word flip (client)
 - `components/about/about.tsx` — about section (client)
 - `components/skills/skills.tsx` — skills section wrapper (client)
 - `components/skills/skill-card.tsx` — single skill tile (client)
@@ -162,7 +186,6 @@ _(updated as we go)_
 - `components/experience/experience.tsx` — vertical timeline w/ scroll-draw accent line + pulsing current-role dot (client)
 - `components/contact/contact.tsx` — contact section: marquee rows, headline, link cards, footer (client)
 - `components/contact/parallax-marquee.tsx` — looping marquee with scroll-driven extra offset (client)
-- `components/ui/custom-cursor.tsx` — two-layer follow cursor (dot + spring-lagged ring) (client)
 - `components/ui/magnetic.tsx` — generic wrapper that pulls children toward the cursor (client)
 - `.nvmrc` — pins Node 22 LTS for Cloudflare Pages builds
 

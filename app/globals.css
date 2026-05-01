@@ -33,8 +33,35 @@
   --accent-foreground: #0a0a0a;
 }
 
+/* Palette overrides — only swap the accent pair so backgrounds/text stay
+   coherent with the active light/dark mode. Driven by a `data-palette`
+   attribute on <html> set by PaletteProvider. */
+:root[data-palette="ocean"]  { --accent: #0ea5e9; --accent-foreground: #ffffff; }
+.dark[data-palette="ocean"]  { --accent: #38bdf8; --accent-foreground: #0a0a0a; }
+:root[data-palette="forest"] { --accent: #16a34a; --accent-foreground: #ffffff; }
+.dark[data-palette="forest"] { --accent: #22c55e; --accent-foreground: #0a0a0a; }
+:root[data-palette="royal"]  { --accent: #8b5cf6; --accent-foreground: #ffffff; }
+.dark[data-palette="royal"]  { --accent: #a78bfa; --accent-foreground: #0a0a0a; }
+:root[data-palette="rose"]   { --accent: #e11d48; --accent-foreground: #ffffff; }
+.dark[data-palette="rose"]   { --accent: #f43f5e; --accent-foreground: #0a0a0a; }
+
 * {
   border-color: var(--border);
+}
+
+/* Smoothly tween color tokens when the theme/palette changes. We stick to
+   cheap, GPU-friendly properties — background-image (gradient interpolation)
+   and box-shadow were dropped because animating them on every node is
+   expensive enough to cause visible lag during the swap. */
+*,
+*::before,
+*::after {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    fill 0.2s ease,
+    stroke 0.2s ease;
 }
 
 html {
@@ -46,24 +73,11 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
 }
 
 ::selection {
   background: var(--accent);
   color: var(--accent-foreground);
-}
-
-/* When the custom cursor is mounted, hide the native cursor on devices
-   with a fine pointer (mouse). Touch / coarse-pointer devices keep the
-   native pointer because we never mount the custom cursor there. */
-@media (hover: hover) and (pointer: fine) {
-  .custom-cursor-active,
-  .custom-cursor-active * {
-    cursor: none !important;
-  }
 }
 
 /* Pure-CSS marquee loop — runs on the compositor for smoothness.
