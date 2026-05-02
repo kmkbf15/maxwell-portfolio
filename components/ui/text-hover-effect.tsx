@@ -6,9 +6,11 @@ import { motion } from "framer-motion";
 export function TextHoverEffect({
   text,
   duration,
+  startDelay = 0,
 }: {
   text: string;
   duration?: number;
+  startDelay?: number;
 }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
@@ -114,10 +116,44 @@ export function TextHoverEffect({
         className="fill-transparent stroke-neutral-200 font-[helvetica] font-bold dark:stroke-neutral-800"
         initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
         animate={{ strokeDashoffset: 0, strokeDasharray: 1000 }}
-        transition={{ duration: 4, ease: "easeInOut" }}
+        transition={{ duration: 5, ease: [0.4, 0, 0.6, 1], delay: startDelay }}
       >
         {text}
       </motion.text>
+      {/* Shooting-star comet — stack of 12 stroke layers form a smooth
+          fade. All layers share the same head position; longer dasharray
+          + lower opacity = tail bleeding further behind the bright tip. */}
+      {Array.from({ length: 12 }, (_, i) => {
+        const t = i / 11; // 0 = deepest tail, 1 = head
+        const round = (n: number) => Math.round(n * 1000) / 1000;
+        return {
+          len: Math.round(100 - t * 94), // 100 → 6
+          width: round(0.3 - t * 0.1), // 0.3 → 0.2
+          opacity: round(Math.pow(t, 1.6) * 0.95 + 0.05), // 0.05 → 1
+        };
+      }).map((layer, i) => (
+        <motion.text
+          key={i}
+          x="50%"
+          y="60%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize="130"
+          textLength="290"
+          lengthAdjust="spacing"
+          strokeWidth={layer.width}
+          strokeLinecap="round"
+          strokeDasharray={`${layer.len} 2000`}
+          opacity={layer.opacity}
+          style={{ stroke: "var(--accent)" }}
+          className="fill-transparent font-[helvetica] font-bold"
+          initial={{ strokeDashoffset: layer.len }}
+          animate={{ strokeDashoffset: layer.len - 1000 }}
+          transition={{ duration: 5, ease: [0.4, 0, 0.6, 1], delay: startDelay }}
+        >
+          {text}
+        </motion.text>
+      ))}
       <text
         x="50%"
         y="60%"

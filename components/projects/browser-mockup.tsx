@@ -28,7 +28,7 @@ export function BrowserMockup({
       </div>
 
       {/* canvas area */}
-      <div className="relative h-[360px] overflow-hidden sm:h-[440px]">
+      <div className="relative h-[260px] overflow-hidden sm:h-[360px] md:h-[440px]">
         {/* Static layered radial gradients — gives the "ambient color"
             feel without any backdrop-blur or animated blurred blobs. */}
         <div
@@ -39,7 +39,7 @@ export function BrowserMockup({
         />
 
         {/* abstract UI shapes — solid bgs (no backdrop-blur) */}
-        <div className="relative grid h-full grid-cols-12 gap-3 p-6">
+        <div className="relative grid h-full grid-cols-12 gap-3 p-4 sm:p-6">
           {/* sidebar column */}
           <div className="col-span-3 hidden flex-col gap-2 sm:flex">
             <div className="h-3 w-3/4 rounded-full bg-foreground/15" />

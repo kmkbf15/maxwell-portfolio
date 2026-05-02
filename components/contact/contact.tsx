@@ -113,7 +113,7 @@ export function Contact() {
         <motion.div
           {...reveal}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mx-auto mt-12 grid max-w-3xl gap-4 sm:grid-cols-3"
+          className="mx-auto mt-12 grid max-w-3xl gap-4 sm:grid-cols-2 md:grid-cols-3"
         >
           {contactLinks.map((link) => {
             const Icon = iconFor[link.kind];

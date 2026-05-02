@@ -37,14 +37,14 @@ export function ParallaxMarquee({
       {Array.from({ length: 4 }).map((_, i) => (
         <span key={i} className="inline-flex items-center">
           <span
-            className={`px-8 font-display text-6xl font-bold uppercase tracking-tight sm:text-7xl md:text-8xl ${
+            className={`px-6 font-display text-4xl font-bold uppercase tracking-tight sm:px-8 sm:text-6xl md:text-8xl ${
               accent ? "text-accent" : "text-foreground"
             }`}
           >
             {text}
           </span>
           <span
-            className={`text-5xl ${
+            className={`text-3xl sm:text-5xl ${
               accent ? "text-foreground/40" : "text-accent"
             }`}
           >

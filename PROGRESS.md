@@ -168,7 +168,7 @@ _(updated as we go)_
 - `lib/utils.ts` — `cn()` class-merge helper
 - `lib/data.ts` — central content/copy file (edit here to update site)
 - `components/providers/theme-provider.tsx` — next-themes wrapper (client component)
-- `components/nav/navbar.tsx` — sticky top nav (server component, embeds toggle)
+- `components/nav/navbar.tsx` — sticky top nav (client) with sliding accent underline that follows hovered link
 - `components/nav/scroll-progress.tsx` — top scroll progress bar (client)
 - `components/nav/theme-switcher.tsx` — palette icon → popover with mode + 5 palette swatches + custom accent picker (client)
 - `components/providers/palette-provider.tsx` — context that persists palette id / custom accent and applies them to `<html>` (client)
@@ -177,6 +177,7 @@ _(updated as we go)_
 - `components/hero/lamp-container.tsx` — Aceternity lamp-effect backdrop with smoother expo-out timings (client)
 - `components/hero/name-reveal.tsx` — animated name (client)
 - `components/hero/layout-text-flip.tsx` — Aceternity-style layout-animated word flip (client)
+- `components/hero/scroll-indicator.tsx` — mouse-with-bouncing-dot scroll cue at hero bottom; fades on scroll (client)
 - `components/about/about.tsx` — about section (client)
 - `components/skills/skills.tsx` — skills section wrapper (client)
 - `components/skills/skill-card.tsx` — single skill tile (client)
@@ -196,3 +197,5 @@ _(updated as we go)_
 - 2026-04-29 — Project kicked off. Owner: Maxwell Gilbert Gunawan, junior dev.
 - Building incrementally; user reviews after each step before next begins.
 - 2026-04-29 — GitHub repo live at **https://github.com/kmkbf15/maxwell-portfolio** (public, branch `main`). All future commits & pushes are done by the user, not Claude.
+- 2026-05-02 — Hero entrance choreographed: role → name → tagline → MAX backdrop → lamp → buttons → scroll indicator. `LampContainer` and `TextHoverEffect` now accept `startDelay` so timing is configured from `hero.tsx`.
+- 2026-05-02 — Responsive sweep: navbar gained a working hamburger + slide-down mobile menu; lamp cones capped at `max-w-[55vw]` to stop overflow on phones; hero h1 retuned `text-4xl → text-8xl` across breakpoints; project cards downsized padding/typography on mobile; browser mockup heights step `260 → 360 → 440`; marquee text rebased at `text-4xl`; contact links use `1 → 2 → 3` columns instead of jumping to 3.

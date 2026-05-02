@@ -23,7 +23,7 @@ export function LayoutTextFlip({
   // Fixed width keeps the rotating word from shifting the surrounding layout.
   // Sized to comfortably fit the longest expected word at each breakpoint.
   return (
-    <span className="relative inline-flex w-24 justify-start text-2xl font-bold tracking-tight text-accent md:w-20 md:text-4xl">
+    <span className="relative inline-flex w-20 justify-start text-xl font-bold tracking-tight text-accent sm:w-24 sm:text-2xl md:w-28 md:text-4xl">
       <AnimatePresence mode="popLayout">
         <motion.span
           key={currentIndex}

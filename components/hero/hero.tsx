@@ -10,6 +10,7 @@ import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { TextHoverEffect } from "@/components/ui/text-hover-effect";
 import { LampContainer } from "./lamp-container";
 import { LayoutTextFlip } from "./layout-text-flip";
+import { ScrollIndicator } from "./scroll-indicator";
 
 const fadeUp = {
   initial: { y: 16, opacity: 0 },
@@ -28,42 +29,48 @@ export function Hero() {
 
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.2]);
+  const indicatorOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
 
   return (
     <section ref={ref} className="relative">
-      <LampContainer backdrop={<TextHoverEffect text="MAX" duration={0.3} />}>
+      <LampContainer
+        startDelay={2.4}
+        backdrop={
+          <TextHoverEffect text="MAX" duration={0.3} startDelay={2.0} />
+        }
+      >
         <motion.div
           style={{ y: contentY, opacity: contentOpacity }}
           className="relative z-10 mx-auto max-w-5xl text-center"
         >
           <motion.p
             {...fadeUp}
-            transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="font-mono text-xs uppercase tracking-[0.3em] text-foreground/80"
           >
             <EncryptedText
               text={site.role}
               revealDelayMs={60}
               flipDelayMs={40}
-              startDelayMs={500}
+              startDelayMs={400}
             />
           </motion.p>
 
-          <h1 className="mt-8 font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-7xl md:text-8xl">
-            <TextGenerateEffect words={site.name} />
+          <h1 className="mt-6 font-display text-4xl font-bold leading-[0.95] tracking-tight sm:mt-8 sm:text-6xl md:text-7xl lg:text-8xl">
+            <TextGenerateEffect words={site.name} startDelay={0.8} />
           </h1>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:mt-8 sm:gap-3">
             <TextGenerateEffect
               words={hero.taglineLead}
-              startDelay={0.6}
-              className="text-2xl font-bold tracking-tight drop-shadow-lg md:text-4xl"
+              startDelay={1.4}
+              className="text-xl font-bold tracking-tight drop-shadow-lg sm:text-2xl md:text-4xl"
             />
             <motion.div
               {...fadeUp}
               transition={{
                 duration: 0.6,
-                delay: 1.3,
+                delay: 1.8,
                 ease: [0.16, 1, 0.3, 1],
               }}
             >
@@ -73,7 +80,7 @@ export function Hero() {
 
           <motion.div
             {...fadeUp}
-            transition={{ duration: 0.6, delay: 1.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.6, delay: 3.2, ease: [0.16, 1, 0.3, 1] }}
             className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row"
           >
             <Magnetic className="inline-block">
@@ -96,6 +103,18 @@ export function Hero() {
           </motion.div>
         </motion.div>
       </LampContainer>
+      <motion.div
+        style={{ opacity: indicatorOpacity }}
+        className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex justify-center"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 3.8, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <ScrollIndicator />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

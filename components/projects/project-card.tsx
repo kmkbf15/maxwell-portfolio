@@ -53,11 +53,11 @@ export function ProjectCard({
     >
       <motion.article
         style={{ scale, opacity }}
-        className="relative w-full max-w-6xl origin-top overflow-hidden rounded-3xl border border-border bg-background p-6 shadow-xl will-change-transform sm:p-10"
+        className="relative w-full max-w-6xl origin-top overflow-hidden rounded-3xl border border-border bg-background p-5 shadow-xl will-change-transform sm:p-8 md:p-10"
       >
-        <div className="grid gap-8 md:grid-cols-[1fr_1.4fr] md:items-center">
+        <div className="grid gap-5 sm:gap-8 md:grid-cols-[1fr_1.4fr] md:items-center">
           {/* left: meta + copy */}
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-4 sm:gap-5">
             <div className="flex items-baseline gap-3">
               <span
                 className="font-mono text-sm tracking-widest"
@@ -70,11 +70,11 @@ export function ProjectCard({
               </span>
             </div>
 
-            <h3 className="font-display text-3xl font-bold leading-tight tracking-tight sm:text-4xl md:text-5xl">
+            <h3 className="font-display text-2xl font-bold leading-tight tracking-tight sm:text-4xl md:text-5xl">
               {project.title}
             </h3>
 
-            <p className="text-base text-foreground/80 sm:text-lg">
+            <p className="text-sm text-foreground/80 sm:text-base md:text-lg">
               {project.blurb}
             </p>
 

@@ -13,10 +13,12 @@ export function LampContainer({
   children,
   className,
   backdrop,
+  startDelay = 0,
 }: {
   children: ReactNode;
   className?: string;
   backdrop?: ReactNode;
+  startDelay?: number;
 }) {
   return (
     <div
@@ -35,12 +37,12 @@ export function LampContainer({
         <motion.div
           initial={{ opacity: 0, width: "0rem" }}
           whileInView={{ opacity: 1, width: "45rem" }}
-          transition={{ delay: 0.5, duration: beamDuration, ease }}
+          transition={{ delay: 0.5 + startDelay, duration: beamDuration, ease }}
           style={{
             backgroundImage:
               "conic-gradient(var(--conic-position), var(--accent), transparent, transparent)",
           }}
-          className="absolute inset-auto right-1/2 h-56 w-[45rem] overflow-visible text-foreground [--conic-position:from_70deg_at_center_top]"
+          className="absolute inset-auto right-1/2 h-56 w-[45rem] max-w-[55vw] overflow-visible text-foreground [--conic-position:from_70deg_at_center_top]"
         >
           {/* Masks that fade the cone's bottom and left edges into the background for a soft falloff */}
           <div className="absolute bottom-0 left-0 z-20 h-40 w-full bg-background [mask-image:linear-gradient(to_top,white,transparent)]" />
@@ -51,12 +53,12 @@ export function LampContainer({
         <motion.div
           initial={{ opacity: 0, width: "0rem" }}
           whileInView={{ opacity: 1, width: "45rem" }}
-          transition={{ delay: 0.5, duration: beamDuration, ease }}
+          transition={{ delay: 0.5 + startDelay, duration: beamDuration, ease }}
           style={{
             backgroundImage:
               "conic-gradient(var(--conic-position), transparent, transparent, var(--accent))",
           }}
-          className="absolute inset-auto left-1/2 h-56 w-[45rem] text-foreground [--conic-position:from_290deg_at_center_top]"
+          className="absolute inset-auto left-1/2 h-56 w-[45rem] max-w-[55vw] text-foreground [--conic-position:from_290deg_at_center_top]"
         >
           {/* Soft falloff masks for the right cone */}
           {/* <div className="absolute bottom-0 right-0 z-20 h-full w-40 bg-background [mask-image:linear-gradient(to_left,white,transparent)]" /> */}
@@ -75,15 +77,15 @@ export function LampContainer({
         <motion.div
           initial={{ width: "0rem", opacity: 0 }}
           whileInView={{ width: "16rem", opacity: 1 }}
-          transition={{ delay: 0.3, duration: beamDuration, ease }}
-          className="absolute inset-auto z-30 h-36 w-64 -translate-y-[6rem] rounded-full bg-accent blur-3xl"
+          transition={{ delay: 0.3 + startDelay, duration: beamDuration, ease }}
+          className="absolute inset-auto z-30 h-36 w-64 max-w-[60vw] -translate-y-[6rem] rounded-full bg-accent blur-3xl"
         />
 
         {/* Light bar — thin sharp accent line that reads as the lamp's bulb / emitter edge */}
         {/* <motion.div
           initial={{ width: "0rem", opacity: 0 }}
           whileInView={{ width: "30rem", opacity: 1 }}
-          transition={{ delay: 0.5, duration: beamDuration, ease }}
+          transition={{ delay: 0.5 + startDelay, duration: beamDuration, ease }}
           className="absolute inset-auto z-50 h-0.5 w-[30rem] -translate-y-[7rem] bg-accent"
         /> */}
 
