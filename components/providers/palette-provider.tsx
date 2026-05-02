@@ -25,15 +25,17 @@ const STORAGE_PALETTE = "portfolio-palette";
 const STORAGE_CUSTOM = "portfolio-custom-accent";
 
 export function PaletteProvider({ children }: { children: React.ReactNode }) {
-  const [palette, setPaletteState] = React.useState<PaletteId>("default");
-  const [customAccent, setCustomAccentState] = React.useState<string>("#ff4d2e");
-
-  React.useEffect(() => {
-    const savedPal = localStorage.getItem(STORAGE_PALETTE) as PaletteId | null;
-    const savedCustom = localStorage.getItem(STORAGE_CUSTOM);
-    if (savedPal) setPaletteState(savedPal);
-    if (savedCustom) setCustomAccentState(savedCustom);
-  }, []);
+  // Read synchronously so the apply-effect below runs once with the correct
+  // value — avoids a default → saved palette flash on mount. The pre-paint
+  // script in app/layout.tsx already mirrors this onto the DOM.
+  const [palette, setPaletteState] = React.useState<PaletteId>(() => {
+    if (typeof window === "undefined") return "default";
+    return (localStorage.getItem(STORAGE_PALETTE) as PaletteId | null) ?? "default";
+  });
+  const [customAccent, setCustomAccentState] = React.useState<string>(() => {
+    if (typeof window === "undefined") return "#ff4d2e";
+    return localStorage.getItem(STORAGE_CUSTOM) ?? "#ff4d2e";
+  });
 
   React.useEffect(() => {
     const html = document.documentElement;
