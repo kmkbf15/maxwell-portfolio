@@ -37,6 +37,7 @@ export function LampContainer({
         <motion.div
           initial={{ opacity: 0, width: "0rem" }}
           whileInView={{ opacity: 1, width: "45rem" }}
+          viewport={{ once: true }}
           transition={{ delay: 0.5 + startDelay, duration: beamDuration, ease }}
           style={{
             backgroundImage:
@@ -53,6 +54,7 @@ export function LampContainer({
         <motion.div
           initial={{ opacity: 0, width: "0rem" }}
           whileInView={{ opacity: 1, width: "45rem" }}
+          viewport={{ once: true }}
           transition={{ delay: 0.5 + startDelay, duration: beamDuration, ease }}
           style={{
             backgroundImage:
@@ -77,6 +79,7 @@ export function LampContainer({
         <motion.div
           initial={{ width: "0rem", opacity: 0 }}
           whileInView={{ width: "16rem", opacity: 1 }}
+          viewport={{ once: true }}
           transition={{ delay: 0.3 + startDelay, duration: beamDuration, ease }}
           className="absolute inset-auto z-30 h-36 w-64 max-w-[60vw] -translate-y-[6rem] rounded-full bg-accent blur-3xl"
         />

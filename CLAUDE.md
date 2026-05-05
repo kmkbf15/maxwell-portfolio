@@ -20,17 +20,9 @@ Goal: bold, creative, eye-catching site that showcases frontend craft.
 
 ## How to work in this repo
 
-1. **Read `PLAN.md`** for the full vision and section breakdown.
-2. **Update `PROGRESS.md`** every time a step is completed. The user uses this
-   as a checkpoint and reads it between steps.
-3. **Build incrementally.** The user wants to review after each meaningful
-   step. Do not chain steps without confirmation. Stop after each numbered
-   build step in `PLAN.md` § "Build Order" and wait.
-4. **Start small.** Prefer minimal, working code over feature-rich first
-   drafts. We add polish in later steps (cursor, magnetic, 3D, etc.).
-5. **Style direction:** bold, creative, memorable. Strong typography, lively
-   motion, dark-by-default with light variant. Avoid generic "card grid"
-   look — this site needs personality.
+1. **Build incrementally.** The user wants to review after each meaningful step. Do not chain steps without confirmation.
+2. **Start small.** Prefer minimal, working code over feature-rich first drafts.
+3. **Style direction:** bold, creative, memorable. Strong typography, lively motion, dark-by-default with light variant. Avoid generic "card grid" look — this site needs personality.
 
 ## Content rules
 

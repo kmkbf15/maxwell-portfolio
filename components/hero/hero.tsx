@@ -41,7 +41,7 @@ export function Hero() {
       >
         <motion.div
           style={{ y: contentY, opacity: contentOpacity }}
-          className="relative z-10 mx-auto max-w-5xl text-center"
+          className="relative z-10 mx-auto max-w-5xl text-center [@media(max-height:700px)]:mt-16"
         >
           <motion.p
             {...fadeUp}
@@ -56,11 +56,11 @@ export function Hero() {
             />
           </motion.p>
 
-          <h1 className="mt-6 font-display text-4xl font-bold leading-[0.95] tracking-tight sm:mt-8 sm:text-6xl md:text-7xl lg:text-8xl">
+          <h1 className="mt-6 font-display text-3xl font-bold leading-[0.95] tracking-tight sm:mt-8 sm:text-6xl md:text-7xl lg:text-8xl">
             <TextGenerateEffect words={site.name} startDelay={0.8} />
           </h1>
 
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:mt-8 sm:gap-3">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 leading-tight sm:mt-8 sm:gap-x-3">
             <TextGenerateEffect
               words={hero.taglineLead}
               startDelay={1.4}
@@ -105,7 +105,7 @@ export function Hero() {
       </LampContainer>
       <motion.div
         style={{ opacity: indicatorOpacity }}
-        className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex justify-center"
+        className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex justify-center [@media(max-height:600px)]:hidden"
       >
         <motion.div
           initial={{ opacity: 0, y: 8 }}

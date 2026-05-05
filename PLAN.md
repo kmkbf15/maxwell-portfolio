@@ -1,201 +1,135 @@
-# Portfolio Plan — Maxwell Gilbert Gunawan
+# Plan — Hero Responsiveness Pass
 
-A bold, creative, eye-catching frontend portfolio that showcases Maxwell's
-selling point as a frontend developer. Built to feel alive and memorable.
+**Scope:** `components/hero/hero.tsx` only. Do not touch `lamp-container.tsx`, `layout-text-flip.tsx`, or other hero subcomponents unless a fix is impossible without it — in which case stop and report back.
+
+**Goal:** Hero looks intentional and readable on every common viewport (small phones → 4K), without horizontal overflow, clipped text, or CTAs that wrap awkwardly.
 
 ---
 
-## 1. Tech Stack
+## Target breakpoints
 
-| Layer | Choice | Why |
+| Range | Width | Notes |
 |---|---|---|
-| Framework | **Next.js 15** (App Router) | Modern React, SEO, great DX |
-| Language | **TypeScript** | Type safety, matches work stack |
-| Styling | **Tailwind CSS v4** | Fast iteration, utility-first |
-| Animations | **Framer Motion** | Best-in-class scroll/micro animations |
-| 3D | **React Three Fiber + Drei** | Lightweight Three.js wrapper for hero |
-| Icons | **Lucide React** | Clean, consistent icon set |
-| Theme | **next-themes** | Dark/light toggle with no flicker |
-| Fonts | **next/font** (Geist + a display font) | Performant, no layout shift |
-| Hosting | **Cloudflare Pages** | User's choice; via `@cloudflare/next-on-pages` |
+| XS phones | 320–374px | iPhone SE, small Androids — tightest case |
+| Phones | 375–639px | Default mobile |
+| `sm` | 640–767px | Large phones, small tablets portrait |
+| `md` | 768–1023px | Tablets |
+| `lg` | 1024–1279px | Small laptops |
+| `xl+` | 1280px+ | Desktops, ultrawides |
+
+Also verify: landscape phones (short height, ~360–430px tall) and `prefers-reduced-motion`.
 
 ---
 
-## 2. Project Structure
+## Known issues to fix in `hero.tsx`
 
-```
-maxwell-portfolio/
-├── app/
-│   ├── layout.tsx              # Root layout, theme provider, fonts, cursor
-│   ├── page.tsx                # Single-page portfolio (composes sections)
-│   ├── globals.css             # Tailwind directives + custom CSS vars
-│   └── not-found.tsx           # Fun 404 page
-├── components/
-│   ├── nav/
-│   │   ├── Navbar.tsx          # Sticky nav with scroll progress
-│   │   └── ThemeToggle.tsx     # Animated dark/light toggle
-│   ├── hero/
-│   │   ├── Hero.tsx            # Hero section orchestrator
-│   │   ├── HeroCanvas.tsx      # R3F 3D scene (cursor-reactive)
-│   │   └── NameReveal.tsx      # Animated name entrance
-│   ├── about/
-│   │   └── About.tsx           # About me + photo placeholder
-│   ├── skills/
-│   │   ├── Skills.tsx          # Animated skill grid
-│   │   └── SkillCard.tsx       # Individual skill tile w/ hover
-│   ├── projects/
-│   │   ├── Projects.tsx        # Section wrapper
-│   │   └── ProjectCard.tsx     # Card with image, hover, links
-│   ├── experience/
-│   │   ├── Experience.tsx      # Timeline section
-│   │   └── TimelineItem.tsx    # Single experience entry
-│   ├── contact/
-│   │   └── Contact.tsx         # Footer with social links
-│   └── ui/
-│       ├── CustomCursor.tsx    # Custom cursor that morphs
-│       ├── MagneticButton.tsx  # Buttons that pull toward cursor
-│       ├── ScrollProgress.tsx  # Top scroll progress bar
-│       ├── Reveal.tsx          # Reusable scroll reveal wrapper
-│       └── Marquee.tsx         # Looping text marquee
-├── lib/
-│   ├── data.ts                 # All content (projects, skills, experience)
-│   ├── utils.ts                # cn() helper, etc.
-│   └── animations.ts           # Shared variants for Framer Motion
-├── public/
-│   ├── images/                 # Project screenshots (placeholders)
-│   ├── resume.pdf              # (to add later)
-│   └── favicon.ico
-├── tailwind.config.ts
-├── tsconfig.json
-├── next.config.ts
-├── package.json
-└── README.md
-```
+1. **Headline `text-4xl` (≈36px) may still overflow on 320–360px wide screens** for `site.name`. Add an explicit XS step (e.g. `text-3xl` base → `text-4xl` at `sm`) or reduce tracking. Verify against the actual `site.name` string length in `lib/data.ts`.
+2. **Tagline row (`taglineLead` + `LayoutTextFlip`)** uses `flex-wrap` + `gap-2`. On narrow widths the flipping word drops to its own line, which is fine — but the row should stay center-aligned and not jitter when the longest rotating word swaps in. The flip component already grid-stacks for sizing; just ensure parent gap/leading don't cause vertical jump on wrap.
+3. **CTA row** is `flex-col` below `sm` and `flex-row` from `sm` up. Confirm both buttons are full-width-comfortable on phones (currently `inline-flex` with `px-6` — fine, but check tap target ≥44px height).
+4. **Top spacing** — `mt-6 sm:mt-8` between role kicker → headline → tagline is fine, but the whole content column lives inside `LampContainer` which has a fixed `-translate-y-80` on the content layer. On short viewports (landscape phones, ~400px tall) the top of the headline can clip above the fold. Consider:
+   - Reducing top padding via classes on the inner `motion.div` for short screens, OR
+   - Document this as a `LampContainer` constraint and leave hero alone.
+5. **Scroll indicator** — `bottom-8` is fine but on very short landscape screens it overlaps CTAs. Hide below a min-height threshold (e.g. `max-[500px]:hidden` or `[@media(max-height:600px)]:hidden`).
+6. **`max-w-5xl`** content width is fine; just verify `px-5` on `LampContainer`'s content layer gives enough side gutter on 320px screens (it does — 20px each side). No change unless overflow appears.
+7. **Parallax transform `y: contentY`** — on mobile, `-15%` of a tall hero can push content noticeably up. Confirm this doesn't worsen the clipping issue from (4). Consider disabling parallax under `md` if it causes problems.
 
 ---
 
-## 3. Sections (in order)
+## Non-goals
 
-### 3.1 Hero
-- Huge animated name reveal: **"Maxwell Gilbert Gunawan"**
-- Tagline (rotating words): *"Frontend Developer crafting interfaces that feel alive."*
-- Subtle 3D shape (cursor-reactive) on the side
-- Two CTAs: "View Work" (scrolls), "Get in Touch"
-- Scroll-down indicator
-
-### 3.2 About
-- Short bio: junior frontend dev (0–2 yrs), focus on UI craft
-- A snapshot list (location, what you do, what you love)
-- Photo placeholder (replace later)
-
-### 3.3 Skills
-- Animated grid of: **React, Next.js, TypeScript, JavaScript, HTML, CSS, Tailwind**
-- Each tile reveals on scroll, hover lifts + glows
-- Subtle proficiency dots
-
-### 3.4 Projects (framed from office work)
-Three case studies — generic, no client names:
-
-1. **Analytics Dashboard** — internal admin tool. Data tables, charts, filters, role-based access.
-2. **Marketing Landing Page** — client-facing site. Pixel-perfect from design, performance optimized, responsive.
-3. **SaaS Feature Module** — web app feature. Complex user flows, API integration, state management.
-
-Each card has: title, summary, tech stack chips, "Live"/"Code" links (optional), screenshot placeholder.
-
-### 3.5 Experience
-- Vertical timeline
-- Current role entry (placeholder details for you to fill)
-- Downloadable resume button (PDF added later)
-
-### 3.6 Contact
-- Bold "Let's build something" CTA
-- Email, LinkedIn, GitHub buttons (you'll provide URLs)
-- Footer with copyright
+- No copy changes (`site.name`, `hero.taglineLead`, rotating words stay as-is).
+- No new components, no extracted helpers.
+- No design-token edits.
+- No changes to lamp visuals, beam sizes, or backdrop `TextHoverEffect`.
+- Do **not** introduce a JS `useMediaQuery` — Tailwind responsive prefixes only.
 
 ---
 
-## 4. "Wow" Features
+## Code-writer agent — task
 
-| Feature | Detail |
-|---|---|
-| **Custom cursor** | Morphs/expands on interactive elements |
-| **Magnetic buttons** | Subtle pull toward cursor on hover |
-| **Scroll reveals** | Text & elements fade/slide on scroll |
-| **3D hero canvas** | Rotating geometry, cursor parallax, lightweight |
-| **Theme toggle** | Animated icon morph, smooth color transition |
-| **Name reveal** | Letters animate in on first load |
-| **Scroll progress bar** | Thin bar at top showing page position |
-| **Marquee strip** | Looping skills/values band between sections |
+**File:** `components/hero/hero.tsx` (only).
 
----
+**Do:**
+1. Read `lib/data.ts` to know the actual `site.name` and `hero.*` string lengths before tuning headline sizes.
+2. Add an explicit XS step for the `<h1>` so it never overflows at 320px width. Pattern: `text-3xl xs:text-4xl sm:text-6xl md:text-7xl lg:text-8xl` — but Tailwind v4 doesn't have `xs` by default, so either keep `text-4xl` as base if it actually fits, or drop base to `text-[2rem]` / `text-3xl` and step up at `sm`.
+3. Tighten the tagline row so the rotating word wraps cleanly under the lead text on narrow screens without vertical jitter (`items-center` on the wrapper, consistent line-height).
+4. Ensure CTA buttons keep ≥44px tap height on mobile (current `py-3` + `text-sm` ≈ 44px — verify, don't shrink).
+5. Hide `ScrollIndicator` on short viewports: add `[@media(max-height:600px)]:hidden` (or equivalent) to its wrapper.
+6. If headline/tagline clips on short landscape phones because of `LampContainer`'s `-translate-y-80`, reduce the inner content's top offset for short viewports via a class on the `motion.div`, e.g. `[@media(max-height:700px)]:mt-2`. Do **not** edit `lamp-container.tsx`.
+7. Disable scroll-driven parallax `y` transform under `md` if it amplifies clipping — guard via a Tailwind class swap is not possible for motion values; instead leave parallax on but reduce range (e.g. `["0%", "-8%"]`) only if testing shows clipping. Prefer leaving it untouched if unproblematic.
 
-## 5. Build Order
+**Do not:**
+- Don't add new dependencies.
+- Don't introduce comments that just restate Tailwind classes.
+- Don't refactor unrelated code.
+- Don't commit/push (user handles git).
 
-1. `create-next-app` with TS + Tailwind + App Router
-2. Install deps: framer-motion, three, @react-three/fiber, @react-three/drei, next-themes, lucide-react, clsx, tailwind-merge
-3. Setup `globals.css`, theme provider, fonts in `layout.tsx`
-4. Build `Navbar` + `ScrollProgress` + `ThemeToggle`
-5. Build `Hero` (start with text + animations, then add 3D canvas)
-6. Build `About` and `Skills`
-7. Build `Projects` + `ProjectCard`
-8. Build `Experience` timeline
-9. Build `Contact` footer
-10. Add `CustomCursor` + `MagneticButton` polish layer
-11. Polish pass: spacing, typography rhythm, responsive checks
-12. Cloudflare Pages config + deploy instructions in README
+**Definition of done:**
+- No horizontal scroll at 320px width.
+- Headline, tagline, and CTAs visible above fold on iPhone SE portrait (375×667) and a 360×640 Android.
+- No overlap between CTAs and scroll indicator on landscape phones (e.g. 740×360).
+- All Tailwind classes valid (no typos), `npm run lint` passes.
 
 ---
 
-## 6. Content I'll Write For You
+## Test-writer / runner agent — task
 
-Since you don't have personal projects yet, I'll write:
-- Hero tagline + about copy (you can edit your tone in)
-- Generic but professional descriptions for the 3 office-work projects (no client names, framed as case studies)
-- Skills descriptions
-- Experience entry placeholders
+**This project has no test runner configured yet.** Do not scaffold one for this task. Instead, perform manual verification and report.
 
-You will need to provide later:
-- Real photo (or skip)
-- Resume PDF
-- LinkedIn/GitHub/email URLs
-- Real screenshots of work (or we keep stylized placeholders)
+**Do:**
+1. Run `npm run lint` — must pass.
+2. Run `npm run build` — must succeed.
+3. Start `npm run dev` and verify the hero at these viewport sizes using browser devtools or a headless browser if available:
+   - 320×568 (XS phone portrait)
+   - 375×667 (iPhone SE)
+   - 390×844 (iPhone 14)
+   - 414×896 (iPhone 11 Pro Max)
+   - 740×360 (landscape phone)
+   - 768×1024 (iPad portrait)
+   - 1024×768 (iPad landscape / small laptop)
+   - 1440×900 (laptop)
+   - 1920×1080 (desktop)
+4. For each viewport, check:
+   - No horizontal scroll.
+   - `site.name` headline fits on intended number of lines without clipping.
+   - Tagline + rotating word row reads cleanly; rotating word swap doesn't cause layout shift.
+   - Both CTAs visible and tappable (≥44px tall).
+   - Scroll indicator visible only when there's room for it.
+   - Parallax on scroll doesn't cause content to clip into the lamp glow oddly.
+5. Verify with `prefers-reduced-motion: reduce` — animations should still be tolerable (this is mostly a Framer Motion concern, not in scope, but flag if broken).
 
----
+**Report format:** a short table — viewport × pass/fail × note. Under 250 words.
 
-## 7. Future Ideas (post-MVP)
-
-- Blog / writings (MDX)
-- Project detail pages (case study deep-dives)
-- Spotify "now playing" widget
-- Guestbook / view counter (Cloudflare D1)
-- Subtle sound effects
-- Konami code easter egg
-- Working contact form (Cloudflare Workers + Resend)
-- View transitions API for nav
-- i18n (English / Indonesian)
-
----
-
-## 8. Deployment (Cloudflare Pages)
-
-- Build with `@cloudflare/next-on-pages`
-- Config `next.config.ts` for edge runtime where applicable
-- Deploy via Wrangler or Cloudflare dashboard
-- Custom domain setup (optional, your own domain)
+**Do not:**
+- Don't add Vitest / Jest / Playwright config.
+- Don't write unit tests for `hero.tsx` — it's near-pure JSX, low value.
+- Don't commit anything.
 
 ---
 
-## 9. Definition of Done (MVP)
+---
 
-- [ ] All 6 sections built and content-complete
-- [ ] Dark/light mode works without flicker
-- [ ] Custom cursor + magnetic buttons live on desktop
-- [ ] Fully responsive (mobile, tablet, desktop)
-- [ ] Lighthouse: Performance ≥ 90, Accessibility ≥ 95
-- [ ] Deploys cleanly to Cloudflare Pages
-- [ ] README with run + deploy instructions
+## Round 2 — zoom / cutoff fix
+
+User reports content is still being clipped when zooming in/out. Root cause: `LampContainer` uses a hard-coded `-translate-y-80` (320px) on the content layer and `min-h-screen` on the outer wrapper. At zoom levels and heights where 320px ≠ a sensible offset, content clips above the visible area or under the lamp glow.
+
+**Expanded scope:** `components/hero/lamp-container.tsx` is now in scope. Treat it as a hero-only component.
+
+**Code-writer tasks (round 2):**
+1. Replace the rigid `-translate-y-80` content offset with a layout that doesn't depend on a fixed pixel pull-up. Options (pick the simplest that works):
+   - Use flex centering on the outer container and let the lamp visuals position themselves *behind* content via `absolute` instead of pulling content up.
+   - Or: keep the translate but make it responsive (e.g. `-translate-y-40 sm:-translate-y-60 lg:-translate-y-80`) and clamped at short heights.
+2. Ensure the lamp's fixed-rem widths (`w-[45rem]`, `h-56`, `h-44`, `-translate-y-[12.5rem]`, `-translate-y-[6rem]`, `h-48`) don't cause horizontal overflow at small viewports — they already have `max-w-[55vw]` / `max-w-[60vw]` but verify nothing else escapes.
+3. Verify `overflow-hidden` on the outer `LampContainer` div is not clipping legitimate content; if it is, switch to `overflow-x-hidden` or move overflow control to a child.
+4. Re-verify hero.tsx — the `[@media(max-height:700px)]:mt-16` patch may become unnecessary once the lamp container is fixed; remove it if so.
+5. Re-run lint + build.
+
+**Test agent (round 2):** repeat the viewport sweep AND verify at browser zoom levels 75%, 100%, 125%, 150%, 200% on a 1440×900 viewport. Report any remaining cutoffs.
 
 ---
 
-**Read this through. When you're ready, reply "go" and I'll start from step 1.**
-**If anything should change, tell me what to adjust before we begin.**
+## Handoff order
+
+1. Code-writer agent runs first against `hero.tsx`.
+2. Test-writer/runner agent verifies in dev server + lint + build.
+3. If test agent reports failures, code-writer iterates. Cap at 2 iterations before escalating to the user.
