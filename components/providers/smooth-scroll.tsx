@@ -1,11 +1,16 @@
 "use client";
 
 import Lenis from "lenis";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect } from "react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 // Lenis hijacks the wheel/touch input and animates `window.scrollY` toward the
 // target — which keeps framer-motion's `useScroll` working unchanged because
-// it still reads from the real scroll position.
+// it still reads from the real scroll position. GSAP's ScrollTrigger is
+// driven off the same instance so pinned/scrubbed timelines stay in sync.
 export function SmoothScroll() {
   useEffect(() => {
     // Respect users who've asked the OS to reduce motion.
@@ -19,12 +24,12 @@ export function SmoothScroll() {
       touchMultiplier: 1.4,
     });
 
-    let rafId = 0;
-    const raf = (time: number) => {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    };
-    rafId = requestAnimationFrame(raf);
+    // Drive Lenis from gsap's ticker so scroll updates and ScrollTrigger
+    // updates run on the same frame (no tearing between the two).
+    lenis.on("scroll", ScrollTrigger.update);
+    const tickerCb = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(tickerCb);
+    gsap.ticker.lagSmoothing(0);
 
     // Make in-page anchor clicks (#about, #contact, etc.) honor smooth scroll.
     const onAnchorClick = (e: MouseEvent) => {
@@ -42,7 +47,7 @@ export function SmoothScroll() {
     document.addEventListener("click", onAnchorClick);
 
     return () => {
-      cancelAnimationFrame(rafId);
+      gsap.ticker.remove(tickerCb);
       document.removeEventListener("click", onAnchorClick);
       lenis.destroy();
     };

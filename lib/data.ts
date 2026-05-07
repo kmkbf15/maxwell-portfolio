@@ -31,6 +31,9 @@ export const hero = {
   secondaryCta: { label: "Get in Touch", href: "#contact" },
 };
 
+// `eyebrow`, `heading`, `bio` are legacy fields read by the current
+// components/about/about.tsx — they get removed in Phase 3 of the redesign
+// when the pinned stage replaces the old layout.
 export const about = {
   eyebrow: "About",
   heading: "A few things about me.",
@@ -38,6 +41,34 @@ export const about = {
     "I'm Maxwell — a frontend developer based in Jakarta, focused on building interfaces that feel responsive, clean, and a little bit alive.",
     "Most of my work happens in React and Next.js. I care about the small details: animation timing, type rhythm, the way a button settles after a click — the stuff people don't notice until it's wrong.",
     "Early in my career and learning fast. Every ship is a chance to tighten the craft.",
+  ],
+
+  // — New shape used by the redesigned pinned About section —
+  cue: "01 / ABOUT",
+  displayWord: "MAXWELL",
+  chapters: [
+    {
+      index: "01",
+      title: "Origin",
+      pullQuote: "Started with a blank HTML file and never really stopped.",
+      // Substring of pullQuote rendered in accent — case-sensitive exact match.
+      pullQuoteAccent: "stopped",
+      body: "Jakarta-based, self-taught into the deep end through CS coursework and a stack of side projects. The web caught me because it was the one medium where you could ship the same day you imagined the thing.",
+    },
+    {
+      index: "02",
+      title: "Craft",
+      pullQuote: "I notice the way a button settles after a click.",
+      pullQuoteAccent: "settles",
+      body: "Most days are React, Next.js, and TypeScript. The work I'm proudest of is the stuff nobody points at — the focus ring that lands, the layout that doesn't shift, the animation that feels like the page is breathing instead of twitching.",
+    },
+    {
+      index: "03",
+      title: "Now",
+      pullQuote: "Early in the career. Every ship tightens the craft.",
+      pullQuoteAccent: "tightens",
+      body: "Currently shipping internal dashboards and client sites. Chasing depth on motion design, accessibility, and the parts of the platform I haven't touched yet. Open to building something with people who care about the same details.",
+    },
   ],
   snapshot: [
     { label: "Based in", value: "Jakarta, Indonesia" },
